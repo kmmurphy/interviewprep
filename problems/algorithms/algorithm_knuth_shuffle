@@ -1,0 +1,8 @@
+The Fisher–Yates shuffle (named after Ronald Fisher and Frank Yates), also known as the Knuth shuffle (after Donald Knuth), is an algorithm for generating a random permutation of a finite set—in plain terms, for randomly shuffling the set. A variant of the Fisher–Yates shuffle, known as Sattolo's algorithm, may be used to generate random cycles of length n instead. Properly implemented, the Fisher–Yates shuffle is unbiased, so that every permutation is equally likely. The modern version of the algorithm is also rather efficient, requiring only time proportional to the number of items being shuffled and no additional storage space.
+
+The basic process of Fisher–Yates shuffling is similar to randomly picking numbered tickets out of a hat, or cards from a deck, one after another until there are no more left. What the specific algorithm provides is a way of doing this numerically in an efficient and rigorous manner that, properly done, guarantees an unbiased result.
+
+To shuffle an array a of n elements (indices 0..n-1):
+  for i from n − 1 downto 1 do
+       j ← random integer with 0 ≤ j ≤ i
+       exchange a[j] and a[i]

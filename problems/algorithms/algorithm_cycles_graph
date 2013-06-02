@@ -1,0 +1,45 @@
+The algorithm takes a directed graph as input, and produces a partition of the graph's vertices into the graph's strongly connected components. Every vertex of the graph appears in a single strongly connected component, even if it means a vertex appears in a strongly connected component by itself (as is the case with tree-like parts of the graph, as well as any vertex with no successor or no predecessor).
+The basic idea of the algorithm is this: a depth-first search begins from an arbitrary start node (and subsequent depth-first searches are conducted on any nodes that have not yet been found). The search does not explore any node that has already been explored. The strongly connected components form the subtrees of the search tree, the roots of which are the roots of the strongly connected components.
+The nodes are placed on a stack in the order in which they are visited. When the search returns from a subtree, the nodes are taken from the stack and it is determined whether each node is the root of a strongly connected component. If a node is the root of a strongly connected component, then it and all of the nodes taken off before it form that strongly connected component.
+
+algorithm tarjan is
+  input: graph G = (V, E)
+  output: set of strongly connected components (sets of vertices)
+
+  index := 0
+  S := empty
+  for each v in V do
+    if (v.index is undefined) then
+      strongconnect(v)
+    end if
+  repeat
+
+  function strongconnect(v)
+    // Set the depth index for v to the smallest unused index
+    v.index := index
+    v.lowlink := index
+    index := index + 1
+    S.push(v)
+
+    // Consider successors of v
+    for each (v, w) in E do
+      if (w.index is undefined) then
+        // Successor w has not yet been visited; recurse on it
+        strongconnect(w)
+        v.lowlink := min(v.lowlink, w.lowlink)
+      else if (w is in S) then
+        // Successor w is in stack S and hence in the current SCC
+        v.lowlink := min(v.lowlink, w.index)
+      end if
+    repeat
+
+    // If v is a root node, pop the stack and generate an SCC
+    if (v.lowlink = v.index) then
+      start a new strongly connected component
+      repeat
+        w := S.pop()
+        add w to current strongly connected component
+      until (w = v)
+      output the current strongly connected component
+    end if
+  end function

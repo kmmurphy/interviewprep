@@ -1,0 +1,12 @@
+The closest pair of points problem or closest pair problem is a problem of computational geometry: given n points in metric space, find a pair of points with the smallest distance between them. The closest pair problem for points in the Euclidean plane[1] was among the first geometric problems which were treated at the origins of the systematic study of the computational complexity of geometric algorithms.
+
+The problem can be solved in O(n log n) time using the recursive divide and conquer approach, e.g., as follows:[1]
+Sort points according to their x-coordinates.
+Split the set of points into two equal-sized subsets by a vertical line x=xmid.
+Solve the problem recursively in the left and right subsets. This yields the left-side and right-side minimum distances dLmin and dRmin, respectively.
+Find the minimal distance dLRmin among the pair of points in which one point lies on the left of the dividing vertical and the second point lies to the right.
+The final answer is the minimum among dLmin, dRmin, and dLRmin.
+
+The dynamic version for the closest-pair problem is stated as follows:
+Given a dynamic set of objects, find algorithms and data structures for efficient recalculation of the closest pair of objects each time the objects are inserted or deleted.
+If the bounding box for all points is known in advance and the constant-time floor function is available, then the expected O(n) space data structure was suggested that supports expected-time O(log n) insertions and deletions and constant query time. When modified for the algebraic decision tree model, insertions and deletions would require O(log2 n) expected time.[5] It is worth noting, though, that the complexity of the dynamic closest pair algorithm cited above is exponential in the dimension d, and therefore such an algorithm becomes less suitable for high-dimensional problems.

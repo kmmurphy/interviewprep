@@ -1,0 +1,23 @@
+Algorithm
+
+The Floyd-Warshall Algorithm is an application of Dynamic Programming.
+Let dist(k,i,j) be the the length of the shortest path from i and j that uses only the vertices  as intermediate vertices. The following recurrence:
+k = 0 is our base case - dist(0,i,j) is the length of the edge from vertex i to vertex j if it exists, and  otherwise.
+dist(k,i,j) = min(dist(k - 1,i,k) + dist(k - 1,k,j),dist(k - 1,i,j)): For any vertex i and vertex j, the length of the shortest path from i to j with all intermediate vertices  simply does not involve the vertex k at all (in which case it is the same as dist(k - 1,i,j)), or that the shorter path goes through vertex k, so the shortest path between vertex i and vertex j is the combination of the path from vertex i to k, and from vertex k to j.
+After N iterations, there is no need anymore to go through any more intermediate vertices, so the distance dist(N,i,j) represents the shortest distance between i and j.
+[edit] Pseudocode
+
+The pseudocode below assumes an input graph of N vertices.
+for i = 1 to N
+   for j = 1 to N
+      if there is an edge from i to j
+         dist[0][i][j] = the length of the edge from i to j
+      else
+         dist[0][i][j] = INFINITY
+
+for k = 1 to N
+   for i = 1 to N
+      for j = 1 to N
+         dist[k][i][j] = min(dist[k-1][i][j], dist[k-1][i][k] + dist[k-1][k][j])
+This will give the shortest distances between any two nodes, from which shortest paths may be constructed.
+This algorithm takes Θ(N3) time and Θ(N3) space, and has the distinct advantage of hiding a small constant in its behavior, since very little work is done in the innermost loop. Furthermore, the space-bound can be reduced further to Θ(N2) by noticing that dist(k,i,j) is independent from dist(k - 1,i,j).

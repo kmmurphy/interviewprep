@@ -1,0 +1,9 @@
+O(n) time complexity
+
+Always store some node to check. Occasionally reset this node to avoid the "Detect Only Full Loops" problem. When resetting it, double the amount of time before resetting it again.
+
+
+O(n) time complexity
+
+Simultaneously go through the list by ones (slow iterator) and by twos (fast iterator). If there is a loop the fast iterator will go around that loop twice as fast as the slow iterator. The fast iterator will lap the slow iterator within a single pass through the cycle. Detecting a loop is then just detecting that the slow iterator has been lapped by the fast iterator.
+
