@@ -6,7 +6,7 @@ var arr = createArrayToSort(1000, 0, 10000)
 var validationArr = [].concat(arr).sort(function (a, b){ return a - b })
 
 // sort the array
-var sortedArr = mergeSort([].concat(arr))
+var sortedArr = insertionSort([].concat(arr))
 
 // compare the native and custom sorts
 try {
@@ -17,30 +17,23 @@ try {
 }
 
 /**
- * Sort an array w/ merge sort
+ * Sort an array w/ insertion sort
+ *
  * @param  {Array.<number>} sortArr the array to sort
  * @return {Array.<number>} returns the array to be sorted
  */
-function mergeSort(sortArr) {
-  if (sortArr.length == 1) return sortArr
-
-  var midPoint = Math.floor(sortArr.length / 2)
-  var arr1 = mergeSort(sortArr.slice(0, midPoint))
-  var arr2 = mergeSort(sortArr.slice(midPoint))
-
-  var arr1Ptr = 0, arr2Ptr = 0, newArr = [], newVal
-  while (arr1Ptr < arr1.length || arr2Ptr < arr2.length) {
-    if (arr1Ptr == arr1.length || (arr2Ptr < arr2.length && arr2[arr2Ptr] < arr1[arr1Ptr])) {
-      newVal = arr2[arr2Ptr]
-      arr2Ptr++
-    } else {
-      newVal = arr1[arr1Ptr]
-      arr1Ptr++
+function insertionSort(sortArr) {
+  for (var i = 1; i < sortArr.length; i++) {
+    var prevIdx = i - 1, currIdx = i
+    while (sortArr[prevIdx] > sortArr[currIdx]) {
+      var temp = sortArr[prevIdx]
+      sortArr[prevIdx] = sortArr[currIdx]
+      sortArr[currIdx] = temp
+      currIdx = prevIdx
+      prevIdx--
     }
-    newArr.push(newVal)
   }
-
-  return newArr
+  return sortArr
 }
 
 /**

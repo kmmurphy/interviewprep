@@ -9,10 +9,12 @@ var validationArr = [].concat(arr).sort(function (a, b){ return a - b })
 var sortedArr = selectionSort([].concat(arr))
 
 // compare the native and custom sorts
-compareArrays(validationArr, sortedArr)
-
-// done
-console.log("THE ARRAYS MATCHED!")
+try {
+  compareArrays(validationArr, sortedArr)
+  console.log("THE ARRAYS MATCHED!")
+} catch (e) {
+  console.error(e.message)
+}
 
 /**
  * Sort an array w/ selection sort
