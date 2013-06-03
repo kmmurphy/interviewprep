@@ -25,6 +25,7 @@ process.nextTick(function () {
       }
     } catch (e) {
       if (e.message == ERROR_LIMITED_BY_DEPTH) {
+        // couldn't find the node because of depth, make sure the node's depth is higher than max depth
         var depth = 0
         do {
           node = node.getParent()
@@ -34,10 +35,26 @@ process.nextTick(function () {
         if (depth <= maxDepth) {
           throw new Error("Node was found at depth of " + depth)
         }
+      } else {
+        throw e
       }
     }
   }
   console.log("FOUND ALL NODES!")
+
+  // test limiting a non-existent search by depth
+  try {
+    node = depthFirstSearchIterative(nodeArr[0], 100000, 5)
+    console.error("SHOULD HAVE FAILED DUE TO LIMITED DEPTH")
+  } catch (e) {
+    if (e.message != ERROR_LIMITED_BY_DEPTH) throw e
+    console.log("LIMITED BY DEPTH AS EXPECTED FOR MISSING NODE")
+  }
+
+  // test searching for a non-existent node w/ a high depth limit
+  node = depthFirstSearchIterative(nodeArr[0], 100000, nodeArr.length)
+  if (node != null) console.error("SHOULD HAVE FAILED DUE TO MISSING NODE")
+  else console.log("MISSING NODE NOT FOUND AS EXPECTED")
 
 })
 
