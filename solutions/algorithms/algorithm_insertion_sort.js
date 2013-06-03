@@ -24,14 +24,11 @@ try {
  */
 function insertionSort(sortArr) {
   for (var i = 1; i < sortArr.length; i++) {
-    var prevIdx = i - 1, currIdx = i
-    while (sortArr[prevIdx] > sortArr[currIdx]) {
-      var temp = sortArr[prevIdx]
-      sortArr[prevIdx] = sortArr[currIdx]
-      sortArr[currIdx] = temp
-      currIdx = prevIdx
-      prevIdx--
+    var holeVal = sortArr[i]
+    for (var holePos = i; holePos >= 1 && sortArr[holePos - 1] > holeVal; holePos--) {
+      sortArr[holePos] = sortArr[holePos - 1]
     }
+    if (holePos != i) sortArr[holePos] = holeVal
   }
   return sortArr
 }
