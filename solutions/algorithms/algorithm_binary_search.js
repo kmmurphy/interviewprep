@@ -28,6 +28,12 @@ for (var j = 0; j < 100; j++) {
 }
 console.log("RETURNED NULL FOR ALL MISSING VALUES")
 
+/**
+ * Search for a value in a sorted array
+ * @param  {Array.<number>} arr the array to search
+ * @param  {number} val the value to search for
+ * @return {number} the index of the item if it exists
+ */
 function binarySearch(arr, val) {
   var start = 0, end = arr.length - 1, mid, midVal
 
