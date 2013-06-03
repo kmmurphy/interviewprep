@@ -6,7 +6,7 @@ var arr = createArrayToSort(1000, 0, 10000)
 var validationArr = [].concat(arr).sort(function (a, b){ return a - b })
 
 // sort the array
-var sortedArr = mergeSort([].concat(arr))
+var sortedArr = radixSort([].concat(arr))
 
 // compare the native and custom sorts
 try {
@@ -17,39 +17,53 @@ try {
 }
 
 /**
- * Sort an array w/ merge sort
- * @param  {Array.<number>} sortArr the array to sort
+ * Sort an array w/ radix sort
+ * @param {Array.<number>} sortArr the array to sort
+ * @param {number} currentDigit the current digit to sort by
+ * @param {number} totalDigits the total number of digits for the largest value
  * @return {Array.<number>} returns the array to be sorted
  */
-function mergeSort(sortArr) {
-  if (sortArr.length == 1) return sortArr
+function radixSort(sortArr, currentDigit, totalDigits) {
+  var i
 
-  var midPoint = Math.floor(sortArr.length / 2)
-  var arr1 = mergeSort(sortArr.slice(0, midPoint))
-  var arr2 = mergeSort(sortArr.slice(midPoint))
-
-  return mergeArrays(arr1, arr2)
-}
-
-/**
- * Merge 2 arrays in sorted order
- * @param  {Array.<number>} arr1 the first array
- * @param  {Array.<number>} arr2 the second array
- * @return {Array.<number>}      the merged array
- */
-function mergeArrays(arr1, arr2) {
-  var arr1Ptr = 0, arr2Ptr = 0, newArr = [], newVal
-  while (arr1Ptr < arr1.length || arr2Ptr < arr2.length) {
-    if (arr1Ptr == arr1.length || (arr2Ptr < arr2.length && arr2[arr2Ptr] < arr1[arr1Ptr])) {
-      newVal = arr2[arr2Ptr]
-      arr2Ptr++
-    } else {
-      newVal = arr1[arr1Ptr]
-      arr1Ptr++
+  if (!totalDigits) {
+    var upperBound = 10
+    currentDigit = 1
+    totalDigits = 1
+    for (i = 0; i < sortArr.length; i++) {
+      while (Math.abs(sortArr[i]) > upperBound) {
+        totalDigits++
+        upperBound *= 10
+      }
     }
-    newArr.push(newVal)
   }
-  return newArr
+  if (currentDigit > totalDigits) return sortArr
+
+  // set up the buckets
+  var buckets = []
+  for (i = 0; i < 10; i++) {
+    buckets.push([])
+  }
+
+  // set up the lower and upper bounds
+  var lowerBound = Math.pow(10, currentDigit - 1)
+
+  // split the numbers into buckets
+  for (i = 0; i < sortArr.length; i++) {
+    var val = sortArr[i]
+    var bucketIdx = Math.floor(val / lowerBound) % 10
+    buckets[bucketIdx].push(val)
+  }
+
+  // rejoin the buckets
+  var newArr = []
+  for (i = 0; i < 10; i++) {
+    for (j = 0; j < buckets[i].length; j++) {
+      newArr.push(buckets[i][j])
+    }
+  }
+
+  return radixSort(newArr, currentDigit + 1, totalDigits)
 }
 
 /**
