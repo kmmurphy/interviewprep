@@ -99,7 +99,7 @@ function getCommandsGo(filename) {
 function getCommandsObjectiveC(filename) {
   var parts = filename.split('/')
   parts = parts.pop().split('.')
-  var outFile = './' + parts[0]
+  var outFile = path.join(__dirname, 'out', parts[0])
   return [
     {
       command: 'clang',
