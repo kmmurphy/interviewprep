@@ -1,36 +1,24 @@
-import math
 import random
 
-# Basic merge sort
-def mergeSort(arr):
+# Basic selection sort
+def selectionSort(arr):
+  newArr = arr[:]
   listLen = len(arr)
 
-  if listLen <= 1:
-    return arr
+  for i in range(0, listLen - 1):
+    lowestIdx = i
+    lowestVal = newArr[i]
 
-  # split the lists
-  listMid = int(listLen / 2)
-  arr1 = mergeSort(arr[0:listMid])
-  arr2 = mergeSort(arr[listMid:listLen])
+    # Find the lowest val
+    for j in range(i + 1, listLen):
+      if newArr[j] < lowestVal:
+        lowestIdx = j
+        lowestVal = newArr[j]
 
-  newArr = []
-  listLen1 = listMid
-  listLen2 = listLen - listMid
-  idx1 = 0
-  idx2 = 0
-  while idx1 < listLen1 or idx2 < listLen2:
-    if idx1 >= listLen1:
-      newArr.append(arr2[idx2])
-      idx2 += 1
-    elif idx2 >= listLen2:
-      newArr.append(arr1[idx1])
-      idx1 += 1
-    elif arr1[idx1] <= arr2[idx2]:
-      newArr.append(arr1[idx1])
-      idx1 += 1
-    else:
-      newArr.append(arr2[idx2])
-      idx2 += 1
+    if i != j:
+      temp = newArr[i]
+      newArr[i] = newArr[lowestIdx]
+      newArr[lowestIdx] = temp
 
   return newArr
 
@@ -61,7 +49,7 @@ arr = createArrayToSort(1000, 0, 10000)
 validationArr = sorted(arr)
 
 # Sort the array using the custom sort
-sortedArr = mergeSort(arr)
+sortedArr = selectionSort(arr)
 
 # Verify that the arrays match
 listsMatch = compareArrays(validationArr, sortedArr)

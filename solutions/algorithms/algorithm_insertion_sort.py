@@ -31,7 +31,7 @@ def compareArrays(arr1, arr2):
     return False
   for i in range(0, len1):
     if arr1[i] != arr2[i]:
-      print "The lists did not match at index ", i
+      print str.format("The lists did not match at index {0}", i)
       return False
   return True
 
