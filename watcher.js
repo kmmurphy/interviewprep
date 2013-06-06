@@ -37,7 +37,7 @@ function runFile(filename) {
     case "js":
       commands = getCommandsJs(filename)
       break;
-    case "python":
+    case "py":
       commands = getCommandsPython(filename)
       break;
     case "go":
@@ -47,7 +47,26 @@ function runFile(filename) {
       throw new Error("No support for type", matches[1])
   }
 
-  console.log(commands)
+  runCommands(filename, commands)
+}
+
+function runCommands(filename, commands) {
+  if (!commands.length) return
+
+  var shortFilename = filename.split('/').pop()
+  var command = commands.shift()
+  var proc = spawn(command.command, command.args)
+  proc.stdout.on('data', function (data) {
+    console.log(shortFilename + ' (stdout): ' + data);
+  });
+
+  proc.stderr.on('data', function (data) {
+    console.log(shortFilename + ' (stderr): ' + data);
+  });
+
+  proc.on('close', function (code) {
+    runCommands(shortFilename, commands)
+  });
 }
 
 function getCommandsJs(filename) {
