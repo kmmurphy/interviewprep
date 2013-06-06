@@ -53,22 +53,6 @@ NSMutableArray* insertionSort(NSArray* array) {
     }
   }
 
-  // BOOL swapped;
-  // int len = [sortedArray count];
-  // do {
-  //   swapped = NO;
-
-  //   for (int i = 0; i < len - 1; i++) {
-  //     NSNumber* num1 = [sortedArray objectAtIndex:i];
-  //     NSNumber* num2 = [sortedArray objectAtIndex:i+1];
-  //     if ([num2 intValue] < [num1 intValue]) {
-  //       swapped = YES;
-  //       [sortedArray replaceObjectAtIndex:i withObject:num2];
-  //       [sortedArray replaceObjectAtIndex:i+1 withObject:num1];
-  //     }
-  //   }
-  // } while (swapped);
-
   return sortedArray;
 }
 
