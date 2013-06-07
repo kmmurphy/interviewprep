@@ -31,7 +31,7 @@ function radixSort(sortArr, currentDigit, totalDigits) {
     currentDigit = 1
     totalDigits = 1
     for (i = 0; i < sortArr.length; i++) {
-      while (Math.abs(sortArr[i]) > upperBound) {
+      while (Math.abs(sortArr[i]) >= upperBound) {
         totalDigits++
         upperBound *= 10
       }
