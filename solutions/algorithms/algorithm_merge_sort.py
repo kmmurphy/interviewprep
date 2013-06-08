@@ -10,8 +10,8 @@ def mergeSort(arr):
 
   # split the lists
   listMid = int(listLen / 2)
-  arr1 = mergeSort(arr[0:listMid])
-  arr2 = mergeSort(arr[listMid:listLen])
+  arr1 = mergeSort(arr[:listMid])
+  arr2 = mergeSort(arr[listMid:])
 
   newArr = []
   listLen1 = listMid
