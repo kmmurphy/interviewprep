@@ -34,5 +34,22 @@ shuffler = Shuffler()
 for char in inputStr:
   shuffler.addChar(char)
 
-print "UNSHUFFLED:", shuffler.getUnshuffledString()
-print "SHUFFLED:", shuffler.getShuffledString()
+shuffled = shuffler.getShuffledString()
+unshuffled = shuffler.getUnshuffledString()
+
+# compare the strings
+allFound = True
+for char1 in inputStr:
+  found = False
+  for char2 in unshuffled:
+    if (char1 == char2):
+      found = True
+  if (found == False):
+    allFound = False
+
+if (allFound == False):
+  print "ALL CHARACTERS WERE NOT FOUND"
+else:
+  print "UNSHUFFLED:", shuffler.getUnshuffledString()
+  print "SHUFFLED:", shuffler.getShuffledString()
+  print "ALL CHARACTERS WERE FOUND"

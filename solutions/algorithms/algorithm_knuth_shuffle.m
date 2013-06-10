@@ -71,7 +71,30 @@ int main (int argc, const char * argv[]) {
     [shuffler addChar:newStr];
   }
 
-  NSLog(@"Unshuffled String: %@", [shuffler getUnshuffledString]);
-  NSLog(@"Shuffled String: %@", [shuffler getShuffledString]);
+  NSString *unshuffledString = [shuffler getUnshuffledString];
+  NSString *shuffledString = [shuffler getShuffledString];
+
+  bool allFound = YES;
+  for (int i = 0; i < len; i++) {
+    int char1 = [inputString characterAtIndex:i];
+    bool found = NO;
+    for (int j = 0; j < len; j++) {
+      int char2 = [shuffledString characterAtIndex:j];
+      if (char2 == char1) {
+        found = YES;
+      }
+    }
+    if (!found) {
+      allFound = NO;
+    }
+  }
+
+  if (!allFound) {
+    NSLog(@"All characters were not found");
+  } else {
+    NSLog(@"Unshuffled String: %@", unshuffledString);
+    NSLog(@"Shuffled String: %@", shuffledString);
+    NSLog(@"All characters were found");
+  }
   return 0;
 }

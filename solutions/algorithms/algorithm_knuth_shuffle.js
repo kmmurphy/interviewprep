@@ -4,8 +4,23 @@ process.nextTick(function () {
   var writer = new ShufflingWriter()
   for (var i = 0; i < string.length; i++) {
     writer.write(string.substr(i, 1))
-    console.log(writer.getUnshuffledString(), writer.getShuffledString())
   }
+  var shuffled = writer.getShuffledString()
+  var unshuffled = writer.getUnshuffledString()
+
+  for (var i = 0; i < string.length; i++) {
+    var chr = string[i]
+    var found = false
+    for (var j = 0; j < unshuffled.length; j++) {
+      if (unshuffled[j] == chr) {
+        found = true
+      }
+    }
+    if (!found) throw new Error("Character was missing!")
+  }
+  console.log("UNSHUFFLED:", unshuffled)
+  console.log("SHUFFLED:", shuffled)
+  console.log("ALL CHARACTERS FOUND")
 
 })
 
