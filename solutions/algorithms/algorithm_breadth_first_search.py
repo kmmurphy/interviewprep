@@ -51,6 +51,7 @@ for i in range(1, 1000):
   node = Node({'val': i})
   parentIdx = random.randint(0, len(nodes) - 1)
   nodes[parentIdx].addChild(node)
+  nodes.append(node)
 
 missingNodes = 0
 for i in range(0, 1000):
