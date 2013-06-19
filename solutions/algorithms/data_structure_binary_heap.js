@@ -233,7 +233,7 @@ var maxHeap = new MaxHeap()
 
 // add a bunch of nodes
 for (var i = 0; i < 20; i++) {
-  maxHeap.insert(i); //Math.floor(Math.random() * 1000))
+  maxHeap.insert(Math.floor(Math.random() * 1000))
   maxHeap.validate()
 }
 
@@ -245,7 +245,7 @@ for (var i = 0; i < 20; i++) {
 
 // add a bunch of nodes
 for (var i = 0; i < 20; i++) {
-  maxHeap.insert(i); //Math.floor(Math.random() * 1000))
+  maxHeap.insert(Math.floor(Math.random() * 1000))
   maxHeap.validate()
 }
 
