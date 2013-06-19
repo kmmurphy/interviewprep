@@ -228,7 +228,6 @@ MaxHeap.prototype.validate = function () {
   }
 }
 
-var lastNode = null
 var maxHeap = new MaxHeap()
 
 // add a bunch of nodes
