@@ -1,0 +1,7 @@
+A pairing heap is a type of heap data structure with relatively simple implementation and excellent practical amortized performance. However, it has proven very difficult to determine the precise asymptotic running time of pairing heaps.
+Pairing heaps are heap ordered multiway trees. Describing the various heap operations is relatively simple (in the following we assume a min-heap):
+find-min: simply return the top element of the heap.
+merge: compare the two root elements, the smaller remains the root of the result, the larger element and its subtree is appended as a child of this root.
+insert: create a new heap for the inserted element and merge into the original heap.
+decrease-key (optional): remove the subtree rooted at the key to be decreased then merge it with the heap.
+delete-min: remove the root and merge its subtrees. Various strategies are employed.
