@@ -87,10 +87,6 @@ MaxHeap.prototype._upheap = function (node) {
   } while (shouldUpheap)
 }
 
-MaxHeap.prototype._findIndex = function (idx) {
-
-}
-
 MaxHeap.prototype._findPreviousNode = function (node) {
   var parentNode = node.getParent()
 
