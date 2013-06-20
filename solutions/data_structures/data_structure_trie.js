@@ -96,3 +96,11 @@ for (var key in vals) {
   prefixTree.validate()
 }
 console.log("Removed all keys")
+
+for (var key in vals) {
+  var treeVal = prefixTree.get(key)
+  if (treeVal != null) {
+    throw new Error("Tree val was found but should be deleted for key " + key)
+  }
+}
+console.log("Verified keys deleted")
