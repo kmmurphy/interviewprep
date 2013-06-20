@@ -16,7 +16,7 @@ Node.prototype.getIndexForChild = function (node) {
 
 Node.prototype.swapChild = function (oldNode, newNode) {
   var idx = this.getIndexForChild(oldNode)
-  oldNode.setParent(null)
+  if (oldNode) oldNode.setParent(null)
   this.setChild(idx, newNode)
 }
 
@@ -58,7 +58,7 @@ SplayTree.prototype.insert = function (val) {
 
   if (!this._rootNode) {
     // set the root
-    this._rootNode = node
+    this._setRootNode(node)
 
   } else {
     // find the appropriate place
@@ -99,7 +99,7 @@ SplayTree.prototype.remove = function (node) {
 
     } else {
       // no parent and no children means this is the only node
-      this._rootNode = null
+      this._setRootNode(null)
     }
     node.setParent(null)
 
@@ -120,8 +120,7 @@ SplayTree.prototype.remove = function (node) {
     if (parent) {
       parent.swapChild(node, child)
     } else {
-      this._rootNode = child
-      child.setParent(null)
+      this._setRootNode(child)
     }
 
     node.setParent(null)
@@ -145,8 +144,63 @@ SplayTree.prototype.find = function (val) {
   return null
 }
 
+SplayTree.prototype._setRootNode = function (node) {
+  if (node) node.setParent(null)
+  this._rootNode = node
+}
+
+SplayTree.prototype._rotateToRoot = function (node) {
+  var parent = node.getParent()
+  var grandParent = parent.getParent()
+  var side = parent.getIndexForChild(node)
+  var childIdx = side === 1 ? 0 : 1
+
+  // find the child closest to the parent
+  var oldChild = node.getChild(childIdx)
+
+  if (grandParent) {
+    grandParent.swapChild(parent, node)
+  } else {
+    this._setRootNode(node)
+  }
+
+  // swap the old child with the parent
+  node.setChild(childIdx, parent)
+
+  // swap the node with its old child on the parent
+  parent.setChild(side, oldChild)
+}
+
 SplayTree.prototype._splay = function (node) {
-  //console.log("Splaying node", require('util').inspect(node))
+  var parent = node.getParent()
+
+  while (parent) {
+    if (parent === this._rootNode) {
+      // rotate to root
+      this._rotateToRoot(node)
+
+    } else {
+      if (!parent.getParent() && parent !== this._rootNode) {
+        throw new Error("Parent has no parent but is not the root node!")
+      }
+      var parentSide = parent.getParent().getIndexForChild(parent)
+      var nodeSide = node.getParent().getIndexForChild(node)
+
+      if (parentSide == nodeSide) {
+        // parent and child on same sides
+        this._rotateToRoot(parent)
+        this._rotateToRoot(node)
+
+      } else {
+        // parent and child on opposite sides
+        this._rotateToRoot(node)
+        this._rotateToRoot(node)
+
+      }
+    }
+
+    parent = node.getParent()
+  }
 }
 
 SplayTree.prototype.validate = function () {
