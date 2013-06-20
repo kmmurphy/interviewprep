@@ -26,17 +26,52 @@ Node.prototype.getChildNodes = function (prefix) {
 }
 
 Node.prototype.removeChildNode = function (node) {
-  delete this._childNodes[node.getKey()]
+  delete this._childNodes[firstLetter(node.getKey())]
 }
 
-Node.prototype.getChildNode = function (prefix) {
-  return this._childNodes[prefix]
+Node.prototype.setChild = function (key, child) {
+  this._childNodes[firstLetter(key)] = child
+  child.setParent(this)
 }
 
-Node.prototype.createChildNode = function (prefix) {
-  var node = new Node(prefix, this)
-  this._childNodes[prefix] = node
-  return node
+Node.prototype.getChildNode = function (prefix, shouldCreate) {
+  // store all nodes by their first char only (we can only have one anyway)
+  var first = firstLetter(prefix)
+  var node = this._childNodes[first]
+
+  if (shouldCreate && !node) {
+    // creating the node if it doesn't exist
+    var node = new Node(prefix, this)
+    this._childNodes[first] = node
+    return node
+  }
+
+  // node doesn't exist
+  if (!node) return undefined
+
+  // check for an exact match
+  var nodeKey = node.getKey()
+  if (nodeKey == prefix) return node
+
+  if (prefix.indexOf(nodeKey) === 0) {
+    // check if the prefix starts with the node's key
+    return node.getChildNode(prefix.substr(nodeKey.length), shouldCreate)
+  }
+
+  // the key doesn't match and we're not creating, just exit
+  if (!shouldCreate) return undefined
+
+  // find the common prefix and create a new node with the prefix
+  var commonPrefix = findCommonPrefix(prefix, nodeKey)
+  var commonNode = new Node(commonPrefix, this)
+  this.setChild(commonPrefix, commonNode)
+
+  // rename the old node and add it as a child to the common node
+  node.setKey(nodeKey.substr(commonPrefix.length))
+  commonNode.setChild(node.getKey(), node)
+
+  // continue on with the new common node
+  return commonNode.getChildNode(prefix.substr(commonPrefix.length), shouldCreate)
 }
 
 Node.prototype.setKey = function (key) {
@@ -60,46 +95,35 @@ function CompactPrefixTree() {
 }
 
 CompactPrefixTree.prototype.set = function (key, val) {
-  var node = this._rootNode
-  for (var i = 0; i < key.length; i++) {
-    var chr = key.substr(i, 1)
-    var child = node.getChildNode(chr)
-    if (!child) child = node.createChildNode(chr)
-    node = child
-  }
-  child.setValue(val)
+  var node = this._rootNode.getChildNode(key, true)
+  node.setValue(val)
 }
 
 CompactPrefixTree.prototype._removeNode = function (node) {
-  while (node !== this._rootNode && typeof node.getValue() === 'undefined' && node.getNumChildren() === 0) {
+  while (node !== this._rootNode && typeof node.getValue() == 'undefined' && node.getNumChildren() === 0) {
+    // remove the leaves
     var parent = node.getParent()
     parent.removeChildNode(node)
     node = parent
   }
+
+  if (node !== this._rootNode && typeof node.getValue() == 'undefined' && node.getNumChildren() === 1) {
+    var child = node.getChildNodes()[0]
+    child.setKey(node.getKey() + child.getKey())
+    node.getParent().setChild(child.getKey(), child)
+  }
 }
 
 CompactPrefixTree.prototype.remove = function (key) {
-  var node = this._rootNode
-  for (var i = 0; i < key.length; i++) {
-    var chr = key.substr(i, 1)
-    var child = node.getChildNode(chr)
-    if (!child) child = node.createChildNode(chr)
-    node = child
-  }
-
-  child.setValue(undefined)
-  this._removeNode(child)
+  var node = this._rootNode.getChildNode(key)
+  if (!node) throw new Error("Trying to remove a non-existent key")
+  node.setValue(undefined)
+  this._removeNode(node)
 }
 
 CompactPrefixTree.prototype.get = function (key) {
-  var node = this._rootNode
-  for (var i = 0; i < key.length; i++) {
-    var chr = key.substr(i, 1)
-    var child = node.getChildNode(chr)
-    if (!child) return undefined
-    node = child
-  }
-  return node.getValue()
+  var node = this._rootNode.getChildNode(key)
+  return node ? node.getValue() : undefined
 }
 
 CompactPrefixTree.prototype.getKeys = function (prefix) {
@@ -115,15 +139,38 @@ CompactPrefixTree.prototype.validate = function () {
   while (nodes.length) {
     count++
     var node = nodes.shift()
+    var nodeVal = node.getValue()
     var childNodes = node.getChildNodes()
-    if (node !== this._rootNode && typeof node.getValue() === 'undefined' && childNodes.length === 0) {
-      throw new Error("A node was found without a value or children")
+
+    if (node !== this._rootNode) {
+      // node is a leaf without a value, should delete
+      if (typeof nodeVal === 'undefined' && childNodes.length === 0) {
+        throw new Error("A node was found without a value or children")
+      }
+
+      // compact prefix tree validation logic, node needs at least 2 children or a value
+      if (typeof nodeVal === 'undefined' && childNodes.length === 1) {
+        throw new Error("This node should be compacted")
+      }
     }
+
     for (var i = 0; i < childNodes.length; i++) {
       nodes.push(childNodes[i])
     }
   }
-  // console.log("Validated", count, "nodes")
+}
+
+function findCommonPrefix(str1, str2) {
+  var idx = 0
+  while (idx < str1.length && idx < str2.length && str1[idx] == str2[idx]) {
+    idx++
+  }
+  if (idx === 0) throw new Error("WTF, there is no common prefix")
+  return str1.substr(0, idx)
+}
+
+function firstLetter(str) {
+  return str.substr(0, 1)
 }
 
 var vals = {}
