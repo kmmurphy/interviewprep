@@ -91,11 +91,12 @@ SkipList.prototype._inject = function (node) {
 
 SkipList.prototype.insert = function (val) {
   this._totalNodes++
+  var node = new Node(val)
 
   if (!this._head) {
     // new head
-    this._head = new Node(val)
-    return this._head
+    this._head = node
+    return node
 
   } else if (val < this._head.getValue()) {
     // retrieve the pointers for the old head and reset it to a blank state
@@ -104,7 +105,7 @@ SkipList.prototype.insert = function (val) {
     oldHead.resetLinks()
 
     // create the new head and claim the old pointers
-    var newHead = this._head = new Node(val)
+    var newHead = this._head = node
     var prevNodes = []
     for (var i = 0; i < all.length; i++) {
       newHead.setSingleNext(i, all[i])
@@ -115,17 +116,56 @@ SkipList.prototype.insert = function (val) {
     this._inject(oldHead)
 
   } else {
-    this._inject(new Node(val))
+    this._inject(node)
   }
 
+  return node
 }
 
 SkipList.prototype.find = function (val) {
-  throw new Error("Unable to find a node")
+  var currNode = this._head
+  if (!currNode) return undefined
+
+  var nextNodes = currNode.getAllNext()
+  var idx = nextNodes.length - 1
+  while (idx >= 0) {
+    if (currNode.getValue() === val) return currNode
+
+    var nextNode = nextNodes[idx]
+    if (!nextNode || nextNode.getValue() > val) {
+      idx--
+    } else {
+      currNode = nextNode
+      nextNodes = currNode.getAllNext()
+    }
+  }
 }
 
 SkipList.prototype.remove = function (node) {
-  throw new Error("Unable to remove a node")
+  this._totalNodes--
+  var allNext = node.getAllNext()
+
+  if (node === this._head) {
+    // promote the next node to be the head
+    var newHead = allNext[0]
+    if (!newHead) this._head = null
+    else {
+      for (var i = 0; i < allNext.length; i++) {
+        if (allNext[i] != newHead) {
+          newHead.setSingleNext(i, allNext[i])
+        }
+      }
+      this._head = newHead
+    }
+
+  } else {
+    var allPrev = node.getAllPrev()
+
+    // point all prev nodes at own next nodes
+    for (var i = 0; i < allPrev.length; i++) {
+      allPrev[i].setSingleNext(i, allNext[i])
+    }
+  }
 }
 
 SkipList.prototype.validate = function () {
@@ -163,8 +203,30 @@ SkipList.prototype.validate = function () {
 
 var skipList = new SkipList()
 var nodes = []
+var vals = []
 for (var i = 0; i < 100; i++) {
-  nodes.push(skipList.insert(Math.floor(Math.random() * 10000)))
+  var val
+  do {
+    val = Math.floor(Math.random() * 100000)
+  } while (vals.indexOf(val) >= 0)
+  vals.push(val)
+
+  nodes.push(skipList.insert(val))
   skipList.validate()
 }
 console.log("All nodes added to skip list")
+
+for (var i = 0; i < nodes.length; i++) {
+  var node = nodes[i]
+  var foundNode = skipList.find(node.getValue())
+  if (node !== foundNode) throw new Error("Unable to find node")
+}
+console.log("Found all nodes in the skip list")
+
+while (nodes.length) {
+  var idx = Math.floor(Math.random() * nodes.length)
+  var node = nodes.splice(idx, 1)[0]
+  skipList.remove(node)
+  skipList.validate()
+}
+console.log("All nodes removed from skip list")
