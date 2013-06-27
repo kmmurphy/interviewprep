@@ -52,8 +52,7 @@ function calculateClosest(sortedPoints) {
 
   // start with the right-most left point and work backwards
   var currentMin = dlr ? dlr.getDistance() : MAX_DISTANCE
-  var rightMax = mid + 6
-  if (sortedPoints.length <= rightMax) rightMax = sortedPoints.length - 1
+  var rightMax = sortedPoints.length - mid > 6 ? mid + 6 : sortedPoints.length - 1
   for (i = mid - 1; i >= 0; i--) {
     for (j = mid; j <= rightMax; j++) {
        if (sortedPoints[j].getX() - midX > currentMin) {
