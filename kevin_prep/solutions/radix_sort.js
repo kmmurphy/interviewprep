@@ -8,11 +8,6 @@ function solve(set, testIdx) {
 	problem.check(testIdx, sorted)
 }
 
-
-function reverse(s){
-	return (s+"").split("").reverse().join("")
-}
-
 function radixSort(set, digit) {
 
 	digit = digit || 0
@@ -31,7 +26,7 @@ function radixSort(set, digit) {
 		if ((val+'').length <= digit) {
 			thisDigit = '0'
 		} else {
-			thisDigit = reverse(val)[digit]
+			thisDigit = (val+'')[(val+'').length-digit-1]
 		}
 
 		if (!map[thisDigit])
