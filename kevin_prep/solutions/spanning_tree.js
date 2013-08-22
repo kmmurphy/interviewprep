@@ -63,11 +63,6 @@ function getSet(point) {
 	return setMap[x][y]
 }
 
-function setsEqual(set1, set2) {
-	return set1.point.x == set2.point.x && set1.point.y == set2.point.y
-}
-
-
 var EDGE_DEFINES = [
 	[[0, 0], [1, 1]],
 	[[0, 0], [0, 5]],
@@ -107,7 +102,7 @@ while (edges.length) {
 	var set1 = getSet(edge.point1)
 	var set2 = getSet(edge.point2)
 
-	if (setsEqual(set1, set2)) {
+	if (set1 === set2) {
 		continue
 	}
 
