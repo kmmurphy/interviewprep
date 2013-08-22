@@ -96,13 +96,16 @@ edges.sort(function(a, b) {
 	return a.distance() - b.distance()
 })
 
+var usedEdges = []
+
 while (edges.length) {
 	var edge = edges.shift()
 
-	var set1 = getSet(edge.point1)
-	var set2 = getSet(edge.point2)
+	var set1 = getSet(edge.point1).getParent()
+	var set2 = getSet(edge.point2).getParent()
 
 	if (set1 === set2) {
+		usedEdges.push(edge)
 		continue
 	}
 
@@ -114,15 +117,9 @@ printTree(setMap)
 function printTree(edges) {
 	console.log('Required edges:')
 
-	var edgeCount = 0
-	for (var x in edges) {
-		for (var y in edges[x]) {
-			edgeCount++
-			var set = setMap[x][y]
-			var parent = set.getParent()
-			console.log('Edge: ' + set.point.x + ', ' + set.point.y + ' - ' + parent.point.x + ', ' + parent.point.y)
-		}
-	}
-
-	console.log('Found total of: ' + edgeCount)
+	usedEdges.forEach(function(edge) {
+		var p1 = edge.point1
+		var p2 = edge.point2
+		console.log('Edge: ' + p1.x + ', ' + p1.y + ' - ' + p2.x + ', ' + p2.y)
+	})
 }
